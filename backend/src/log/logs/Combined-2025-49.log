@@ -1,0 +1,44 @@
+[2025-12-04 21:06:39] error: Error seeding database: null value in column "level" of relation "roles" violates not-null constraint
+[2025-12-04 21:07:25] info: Database seeded successfully
+[2025-12-04 21:07:53] error: Error in authController register: notNull Violation: User.companyId cannot be null,
+notNull Violation: User.roleId cannot be null
+[2025-12-04 21:09:23] error: Error in authController register: notNull Violation: User.companyId cannot be null
+[2025-12-04 21:09:42] error: Error in authController register: null value in column "company_id" of relation "users" violates not-null constraint
+[2025-12-04 21:10:09] info: Database seeded successfully
+[2025-12-04 21:10:14] info: User created successfully with id: 1
+[2025-12-04 21:13:15] info: User logged in successfully with id: 1
+[2025-12-04 21:15:13] warn: Invalid request body: "name" is required
+[2025-12-04 21:15:24] warn: Invalid request body: "password" must be a string
+[2025-12-04 21:37:42] error: Error in authController register: Company is not defined
+[2025-12-04 21:37:57] error: Error in authController register: Validation error
+[2025-12-04 21:38:14] error: Error in authController register: Validation error
+[2025-12-04 21:38:21] info: Database seeded successfully
+[2025-12-04 21:38:32] info: Database seeded successfully
+[2025-12-04 21:38:38] info: User created successfully with id: 1
+[2025-12-04 21:46:39] error: Error getting companies: TypeError: Cannot read properties of undefined (reading 'roles')
+[2025-12-04 21:48:02] error: Error validating token: Cannot read properties of undefined (reading 'split')
+[2025-12-04 21:49:16] warn: Unauthorized access attempt
+[2025-12-04 21:49:25] error: Error getting companies: TypeError: Cannot read properties of undefined (reading 'permissions')
+[2025-12-04 22:07:07] info: Database seeded successfully
+[2025-12-04 22:07:07] error: Error seeding database: Cannot access 'permissions' before initialization
+[2025-12-04 22:08:04] error: Error seeding database: permissionsData is not iterable
+[2025-12-04 22:08:27] error: Error seeding database: permissionsData is not iterable
+[2025-12-04 22:08:43] error: Error seeding database: "undefined" is not valid JSON
+[2025-12-04 22:09:06] error: Error seeding database: bcrypt is not defined
+[2025-12-04 22:09:44] info: Database seeded successfully
+[2025-12-04 22:10:03] info: User logged in successfully with id: 1
+[2025-12-04 22:11:07] error: Error validating token: Cannot read properties of undefined (reading 'getTableName')
+[2025-12-04 22:13:47] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'permissions')
+[2025-12-04 22:14:31] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'permissions')
+[2025-12-04 22:15:32] info: User logged in successfully with id: 1
+[2025-12-04 22:15:36] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'permissions')
+[2025-12-04 22:15:55] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'Permissions')
+[2025-12-04 22:16:37] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'Permissions')
+[2025-12-04 22:16:49] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'Permissions')
+[2025-12-04 22:17:12] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'Permissions')
+[2025-12-04 22:17:29] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'some')
+[2025-12-04 22:18:10] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'some')
+[2025-12-04 22:18:21] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'some')
+[2025-12-04 22:18:39] error: Error getting permissions: TypeError: Cannot read properties of undefined (reading 'some')
+[2025-12-04 22:23:50] warn: Unauthorized access attempt
+[2025-12-04 22:24:04] warn: Unauthorized access attempt

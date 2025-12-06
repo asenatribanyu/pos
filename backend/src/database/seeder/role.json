@@ -1,0 +1,12 @@
+{
+  "roles": [
+    {
+      "name": "Super Admin",
+      "level": "developer"
+    },
+    {
+      "name": "Owner",
+      "level": "company"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "permissions": [
+    {
+      "name": "permission_index"
+    },
+    {
+      "name": "permission_create"
+    },
+    {
+      "name": "permission_show"
+    },
+    {
+      "name": "permission_update"
+    },
+    {
+      "name": "permission_destroy"
+    }
+  ]
+}
