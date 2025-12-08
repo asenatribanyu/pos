@@ -8,6 +8,7 @@ import RolePermission from "./rolePermission.js";
 import ProductCategory from "./productCategory.js";
 import Product from "./product.js";
 import ProductStock from "./productStock.js";
+import StockMovement from "./stockMovement.js";
 
 User.belongsTo(Role, { foreignKey: "roleId" });
 Role.hasMany(User, { foreignKey: "roleId" });
@@ -39,4 +40,4 @@ Product.belongsTo(ProductCategory, { foreignKey: "categoryId" });
 Product.hasMany(ProductStock, { foreignKey: "productId" });
 ProductStock.belongsTo(Product, { foreignKey: "productId" });
 
-export { db, User, Company, Branch, Role, Permission, RolePermission, ProductCategory, Product, ProductStock };
+export { db, User, Company, Branch, Role, Permission, RolePermission, ProductCategory, Product, ProductStock, StockMovement };
