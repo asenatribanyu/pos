@@ -39,4 +39,4 @@ Product.belongsTo(ProductCategory, { foreignKey: "categoryId" });
 Product.hasMany(ProductStock, { foreignKey: "productId" });
 ProductStock.belongsTo(Product, { foreignKey: "productId" });
 
-export { db, User, Company, Branch, Role, Permission, RolePermission };
+export { db, User, Company, Branch, Role, Permission, RolePermission, ProductCategory, Product, ProductStock };
