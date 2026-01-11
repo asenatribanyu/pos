@@ -4,38 +4,6 @@ import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 import { User, Role, Permission, RolePermission } from "../model/index.js";
 
-const register = async (req, res, next) => {
-  try {
-    const schema = joi.object({
-      name: joi.string().required(),
-      email: joi.string().email().required(),
-      password: joi.string().required(),
-      companyName: joi.string().required(),
-      companyAdress: joi.string().required(),
-      companyPhone: joi.string().required(),
-    });
-    const { error } = schema.validate(req.body);
-    if (error) {
-      logger.warn(`Invalid request body: ${error.message}`);
-      return res.status(400).json({
-        meta: {
-          code: 400,
-          message: error.message,
-        },
-      });
-    }
-    next();
-  } catch (error) {
-    logger.error(`Error registering user: ${error}`);
-    return res.status(500).json({
-      meta: {
-        code: 500,
-        message: "Internal Server Error",
-      },
-    });
-  }
-};
-
 const login = async (req, res, next) => {
   try {
     const schema = joi.object({
@@ -68,29 +36,55 @@ const validateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      logger.warn("Unauthorized access attempt");
       return res.status(401).json({
-        meta: {
-          code: 401,
-          message: "Unauthorized",
-        },
+        meta: { code: 401, message: "Unauthorized" },
       });
     }
+
     const token = authHeader.split(" ")[1];
     if (!token) {
-      logger.warn("Unauthorized access attempt");
       return res.status(401).json({
-        meta: {
-          code: 401,
-          message: "Unauthorized",
-        },
+        meta: { code: 401, message: "Unauthorized" },
       });
     }
+
     const decoded = jwt.verify(token, config.app.jwtSecret);
-    const user = await User.findOne({ where: { id: decoded.id }, include: { model: Role, include: { model: Permission, through: { attributes: [] } } } });
+
+    const user = await User.findOne({
+      where: { id: decoded.id },
+      include: {
+        model: Role,
+        include: { model: Permission, through: { attributes: [] } },
+      },
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        meta: { code: 401, message: "Unauthorized" },
+      });
+    }
+
     req.user = user;
     next();
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        meta: {
+          code: 401,
+          message: "Token expired",
+        },
+      });
+    }
+
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        meta: {
+          code: 401,
+          message: "Invalid token",
+        },
+      });
+    }
+
     logger.error(`Error validating token: ${error.message}`);
     return res.status(500).json({
       meta: {
@@ -112,4 +106,4 @@ const checkPermission = async (req, permission) => {
   }
 };
 
-export default { register, login, validateToken, checkPermission };
+export default { login, validateToken, checkPermission };

@@ -14,7 +14,7 @@ const Role = db.define(
       allowNull: false
     },
     level: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   },

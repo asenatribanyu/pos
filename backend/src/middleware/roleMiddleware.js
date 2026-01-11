@@ -4,7 +4,7 @@ import authMiddleware from "./authMiddleware.js";
 
 export const index = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "role_index");
+    const granted = await authMiddleware.checkPermission(req, "role.index");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -29,7 +29,7 @@ export const index = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "role_create");
+    const granted = await authMiddleware.checkPermission(req, "role.create");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -42,6 +42,7 @@ const create = async (req, res, next) => {
       const schema = Joi.object({
         name: Joi.string().required(),
         permissionIds: Joi.array().items(Joi.number()).required(),
+        level: Joi.number().required(),
       });
       const { error } = schema.validate(req.body);
       if (error)
@@ -66,7 +67,7 @@ const create = async (req, res, next) => {
 
 const show = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "role_show");
+    const granted = await authMiddleware.checkPermission(req, "role.show");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -91,7 +92,7 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "role_update");
+    const granted = await authMiddleware.checkPermission(req, "role.update");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -104,6 +105,7 @@ const update = async (req, res, next) => {
       const schema = Joi.object({
         name: Joi.string().required(),
         permissionIds: Joi.array().items(Joi.number()).required(),
+        level: Joi.number().required(),
       });
       const { error } = schema.validate(req.body);
       if (error)
@@ -128,7 +130,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "role_destroy");
+    const granted = await authMiddleware.checkPermission(req, "role.destroy");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({

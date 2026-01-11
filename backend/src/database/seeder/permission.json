@@ -1,19 +1,64 @@
 {
   "permissions": [
     {
-      "name": "permission_index"
+      "name": "permission.index"
     },
     {
-      "name": "permission_create"
+      "name": "permission.create"
     },
     {
-      "name": "permission_show"
+      "name": "permission.show"
     },
     {
-      "name": "permission_update"
+      "name": "permission.update"
     },
     {
-      "name": "permission_destroy"
+      "name": "permission.destroy"
+    },
+    {
+      "name": "role.index"
+    },
+    {
+      "name": "role.create"
+    },
+    {
+      "name": "role.show"
+    },
+    {
+      "name": "role.update"
+    },
+    {
+      "name": "role.destroy"
+    },
+    {
+      "name": "branch.index"
+    },
+    {
+      "name": "branch.create"
+    },
+    {
+      "name": "branch.show"
+    },
+    {
+      "name": "branch.update"
+    },
+    {
+      "name": "branch.destroy"
+    },
+    {
+      "name": "user.index"
+    },
+    {
+      "name": "user.create"
+    },
+    {
+      "name": "user.show"
+    },
+    {
+      "name": "user.update"
+    },
+    {
+      "name": "user.destroy"
     }
   ]
 }

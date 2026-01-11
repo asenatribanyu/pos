@@ -13,10 +13,6 @@ const User = db.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    companyId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

@@ -2,9 +2,9 @@ import Joi from "joi";
 import logger from "../log/logger.js";
 import authMiddleware from "./authMiddleware.js";
 
-const index = async (req, res, next) => {
+export const index = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "product_category_index");
+    const granted = await authMiddleware.checkPermission(req, "user.index");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -17,7 +17,7 @@ const index = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    logger.error(`Error getting product categories: ${error}`);
+    logger.error(`Error getting users: ${error}`);
     return res.status(500).json({
       meta: {
         code: 500,
@@ -29,7 +29,7 @@ const index = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "product_category_create");
+    const granted = await authMiddleware.checkPermission(req, "user.create");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -41,7 +41,10 @@ const create = async (req, res, next) => {
     } else {
       const schema = Joi.object({
         name: Joi.string().required(),
-        companyId: Joi.number().required(),
+        email: Joi.string().required(),
+        password: Joi.string().required(),
+        roleId: Joi.number().required(),
+        branchId: Joi.number().allow(null).optional(),
       });
       const { error } = schema.validate(req.body);
       if (error)
@@ -54,32 +57,7 @@ const create = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    logger.error(`Error creating product category: ${error}`);
-    return res.status(500).json({
-      meta: {
-        code: 500,
-        message: "Internal Server Error",
-      },
-    });
-  }
-};
-
-const show = async (req, res, next) => {
-  try {
-    const granted = await authMiddleware.checkPermission(req, "product_category_show");
-    if (!granted) {
-      logger.warn("Unauthorized access attempt");
-      return res.status(401).json({
-        meta: {
-          code: 401,
-          message: "You Don't Have Permission",
-        },
-      });
-    } else {
-      next();
-    }
-  } catch (error) {
-    logger.error(`Error getting product category: ${error}`);
+    logger.error(`Error creating user: ${error}`);
     return res.status(500).json({
       meta: {
         code: 500,
@@ -91,7 +69,7 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "product_category_update");
+    const granted = await authMiddleware.checkPermission(req, "user.update");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -103,6 +81,10 @@ const update = async (req, res, next) => {
     } else {
       const schema = Joi.object({
         name: Joi.string().required(),
+        email: Joi.string().required(),
+        password: Joi.string().required(),
+        roleId: Joi.number().required(),
+        branchId: Joi.number().allow(null).optional(),
       });
       const { error } = schema.validate(req.body);
       if (error)
@@ -115,7 +97,7 @@ const update = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    logger.error(`Error updating product category: ${error}`);
+    logger.error(`Error updating user: ${error}`);
     return res.status(500).json({
       meta: {
         code: 500,
@@ -125,9 +107,9 @@ const update = async (req, res, next) => {
   }
 };
 
-const destroy = async (req, res, next) => {
+const show = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "product_category_destroy");
+    const granted = await authMiddleware.checkPermission(req, "user.show");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -140,7 +122,7 @@ const destroy = async (req, res, next) => {
       next();
     }
   } catch (error) {
-    logger.error(`Error deleting product category: ${error}`);
+    logger.error(`Error getting user: ${error}`);
     return res.status(500).json({
       meta: {
         code: 500,
@@ -150,4 +132,79 @@ const destroy = async (req, res, next) => {
   }
 };
 
-export default { index, create, show, update, destroy };
+const destroy = async (req, res, next) => {
+  try {
+    const granted = await authMiddleware.checkPermission(req, "user.destroy");
+    if (!granted) {
+      logger.warn("Unauthorized access attempt");
+      return res.status(401).json({
+        meta: {
+          code: 401,
+          message: "You Don't Have Permission",
+        },
+      });
+    } else {
+      next();
+    }
+  } catch (error) {
+    logger.error(`Error deleting user: ${error}`);
+    return res.status(500).json({
+      meta: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+    });
+  }
+};
+
+const profile = async (req, res, next) => {
+  try {
+    next();
+  } catch (error) {
+    logger.error(`Error getting profile: ${error}`);
+    return res.status(500).json({
+      meta: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+    });
+  }
+};
+
+const changePassword = async (req, res, next) => {
+  try {
+    const schema = Joi.object({
+      oldPassword: Joi.string().required(),
+      newPassword: Joi.string().required(),
+    });
+    const { error } = schema.validate(req.body);
+    if (error) {
+      logger.warn(`Invalid request body: ${error.message}`);
+      return res.status(400).json({
+        meta: {
+          code: 400,
+          message: error.message,
+        },
+      });
+    }
+    next();
+  } catch (error) {
+    logger.error(`Error changing password: ${error}`);
+    return res.status(500).json({
+      meta: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+    });
+  }
+};
+
+export default {
+  index,
+  create,
+  show,
+  update,
+  destroy,
+  profile,
+  changePassword,
+};

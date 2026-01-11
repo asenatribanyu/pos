@@ -1,17 +1,24 @@
 import { Permission } from "../model/index.js";
 import logger from "../log/logger.js";
+import { Op } from "sequelize";
 
 const index = async (req, res) => {
   try {
+    const search = req.query.search || null;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
+    let whereClause = {};
+    if (search) {
+      whereClause = { name: { [Op.iLike]: `%${search}%` } };
+    }
     let paginantion = {};
     const disablePaginantion = req.query.disablePaginantion === "true";
     if (!disablePaginantion) {
       paginantion = { limit, offset };
     }
     const { rows: permissions, count } = await Permission.findAndCountAll({
+      where: whereClause,
       ...paginantion,
       order: [["name", "ASC"]],
     });

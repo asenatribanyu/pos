@@ -1,39 +1,35 @@
-import { DataTypes } from 'sequelize'
-import db from '../database/database.js'
+import { DataTypes } from "sequelize";
+import db from "../database/database.js";
 
 const Branch = db.define(
-  'Branch',
+  "Branch",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
-    },
-    companyId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
     timestamps: true,
-    underscored: true
+    underscored: true,
   }
-)
+);
 
-export default Branch
+export default Branch;

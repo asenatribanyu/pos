@@ -4,7 +4,7 @@ import authMiddleware from "./authMiddleware.js";
 
 const index = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "permission_index");
+    const granted = await authMiddleware.checkPermission(req, "permission.index");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -29,7 +29,7 @@ const index = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "permission_create");
+    const granted = await authMiddleware.checkPermission(req, "permission.create");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -54,7 +54,7 @@ const create = async (req, res, next) => {
 
 const show = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "permission_show");
+    const granted = await authMiddleware.checkPermission(req, "permission.show");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -79,7 +79,7 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "permission_update");
+    const granted = await authMiddleware.checkPermission(req, "permission.update");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -104,7 +104,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "permission_destroy");
+    const granted = await authMiddleware.checkPermission(req, "permission.destroy");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({

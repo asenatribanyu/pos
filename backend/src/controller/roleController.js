@@ -1,12 +1,27 @@
 import { Role, Permission, RolePermission } from "../model/index.js";
 import logger from "../log/logger.js";
+import { Op } from "sequelize";
 
 const index = async (req, res) => {
   try {
+    const search = req.query.search || null;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
+    let whereClause = {};
+    if (search) {
+      if (!isNaN(search)) {
+        whereClause = {
+          [Op.or]: [{ level: { [Op.eq]: `${search}` } }],
+        };
+      } else {
+        whereClause = {
+          [Op.or]: [{ name: { [Op.iLike]: `%${search}%` } }],
+        };
+      }
+    }
     const { rows: roles, count } = await Role.findAndCountAll({
+      where: whereClause,
       limit,
       offset,
       order: [["name", "ASC"]],
@@ -37,7 +52,16 @@ const index = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { name, permissionIds } = req.body;
+    const { name, permissionIds, level } = req.body;
+    const levelCreateor = req.user.Role.level;
+    if (level < levelCreateor) {
+      return res.status(400).json({
+        meta: {
+          code: 400,
+          message: "Cannot create role with level higher than your own",
+        },
+      });
+    }
     const existingRole = await Role.findOne({ where: { name } });
     if (existingRole) {
       return res.status(400).json({
@@ -47,7 +71,7 @@ const create = async (req, res) => {
         },
       });
     }
-    const role = await Role.create({ name });
+    const role = await Role.create({ name, level });
     await RolePermission.bulkCreate(permissionIds.map((permissionId) => ({ roleId: role.id, permissionId })));
     return res.status(200).json({
       meta: {
@@ -101,7 +125,16 @@ const show = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, permissionIds } = req.body;
+    const { name, permissionIds, level } = req.body;
+    const levelUpdater = req.user.Role.level;
+    if (level <= levelUpdater) {
+      return res.status(400).json({
+        meta: {
+          code: 400,
+          message: "Cannot set role to a level higher than your own",
+        },
+      });
+    }
     const role = await Role.findByPk(id);
     await RolePermission.destroy({ where: { roleId: id } });
     await RolePermission.bulkCreate(permissionIds.map((permissionId) => ({ roleId: id, permissionId })));
@@ -114,7 +147,7 @@ const update = async (req, res) => {
         },
       });
     }
-    await role.update({ name });
+    await role.update({ name, level });
     return res.status(200).json({
       meta: {
         code: 200,

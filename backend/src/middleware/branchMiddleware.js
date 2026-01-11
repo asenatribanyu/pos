@@ -4,7 +4,7 @@ import authMiddleware from "./authMiddleware.js";
 
 const index = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "branch_index");
+    const granted = await authMiddleware.checkPermission(req, "branch.index");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -29,7 +29,7 @@ const index = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "branch_create");
+    const granted = await authMiddleware.checkPermission(req, "branch.create");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -41,7 +41,6 @@ const create = async (req, res, next) => {
     } else {
       const schema = Joi.object({
         name: Joi.string().required(),
-        companyId: Joi.number().required(),
         city: Joi.string().required(),
         address: Joi.string().required(),
         phone: Joi.string().required(),
@@ -69,7 +68,7 @@ const create = async (req, res, next) => {
 
 const show = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "branch_show");
+    const granted = await authMiddleware.checkPermission(req, "branch.show");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -94,7 +93,7 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "branch_update");
+    const granted = await authMiddleware.checkPermission(req, "branch.update");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({
@@ -133,7 +132,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
   try {
-    const granted = await authMiddleware.checkPermission(req, "branch_destroy");
+    const granted = await authMiddleware.checkPermission(req, "branch.destroy");
     if (!granted) {
       logger.warn("Unauthorized access attempt");
       return res.status(401).json({

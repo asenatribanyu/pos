@@ -2,11 +2,11 @@
   "roles": [
     {
       "name": "Super Admin",
-      "level": "developer"
+      "level": 0
     },
     {
       "name": "Owner",
-      "level": "company"
+      "level": 1
     }
   ]
 }
