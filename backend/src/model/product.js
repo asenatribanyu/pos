@@ -23,25 +23,25 @@ const Product = db.define(
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    basePrice: {
-      type: DataTypes.DECIMAL,
-      allowNull: false,
-    },
-    sellPrice: {
-      type: DataTypes.DECIMAL,
-      allowNull: false,
-    },
-    sku: {
-      type: DataTypes.STRING,
       allowNull: true,
+    },
+    type: {
+      type: DataTypes.ENUM("retail", "service", "fnb"),
+      allowNull: false,
+    },
+    price: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
+    costPrice: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
     },
   },
   {
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 export default Product;

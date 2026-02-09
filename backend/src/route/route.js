@@ -9,6 +9,8 @@ import branchController from "../controller/branchController.js";
 import branchMiddleware from "../middleware/branchMiddleware.js";
 import userMiddleware from "../middleware/userMiddleware.js";
 import userController from "../controller/userController.js";
+import productCategoryController from "../controller/productCategoryController.js";
+import productCategoryMiddleware from "../middleware/productCategoryMiddleware.js";
 
 const router = Router();
 
@@ -21,11 +23,31 @@ router.use((req, res, next) => {
 
 router.post("/auth/login", authMiddleware.login, authController.login);
 
-router.get("/permission", permissionMiddleware.index, permissionController.index);
-router.post("/permission", permissionMiddleware.create, permissionController.create);
-router.get("/permission/:id", permissionMiddleware.show, permissionController.show);
-router.put("/permission/:id", permissionMiddleware.update, permissionController.update);
-router.delete("/permission/:id", permissionMiddleware.destroy, permissionController.destroy);
+router.get(
+  "/permission",
+  permissionMiddleware.index,
+  permissionController.index,
+);
+router.post(
+  "/permission",
+  permissionMiddleware.create,
+  permissionController.create,
+);
+router.get(
+  "/permission/:id",
+  permissionMiddleware.show,
+  permissionController.show,
+);
+router.put(
+  "/permission/:id",
+  permissionMiddleware.update,
+  permissionController.update,
+);
+router.delete(
+  "/permission/:id",
+  permissionMiddleware.destroy,
+  permissionController.destroy,
+);
 
 router.get("/role", roleMiddleware.index, roleController.index);
 router.post("/role", roleMiddleware.create, roleController.create);
@@ -37,7 +59,11 @@ router.get("/branch", branchMiddleware.index, branchController.index);
 router.post("/branch", branchMiddleware.create, branchController.create);
 router.get("/branch/:id", branchMiddleware.show, branchController.show);
 router.put("/branch/:id", branchMiddleware.update, branchController.update);
-router.delete("/branch/:id", branchMiddleware.destroy, branchController.destroy);
+router.delete(
+  "/branch/:id",
+  branchMiddleware.destroy,
+  branchController.destroy,
+);
 
 router.get("/user", userMiddleware.index, userController.index);
 router.post("/user", userMiddleware.create, userController.create);
@@ -45,7 +71,37 @@ router.get("/user/:id", userMiddleware.show, userController.show);
 router.put("/user/:id", userMiddleware.update, userController.update);
 router.delete("/user/:id", userMiddleware.destroy, userController.destroy);
 
+router.get(
+  "/product-category",
+  productCategoryMiddleware.index,
+  productCategoryController.index,
+);
+router.post(
+  "/product-category",
+  productCategoryMiddleware.create,
+  productCategoryController.create,
+);
+router.get(
+  "/product-category/:id",
+  productCategoryMiddleware.show,
+  productCategoryController.show,
+);
+router.put(
+  "/product-category/:id",
+  productCategoryMiddleware.update,
+  productCategoryController.update,
+);
+router.delete(
+  "/product-category/:id",
+  productCategoryMiddleware.destroy,
+  productCategoryController.destroy,
+);
+
 router.get("/me", userMiddleware.profile, userController.profile);
-router.put("/me/change-password", userMiddleware.changePassword, userController.changePassword);
+router.put(
+  "/me/change-password",
+  userMiddleware.changePassword,
+  userController.changePassword,
+);
 
 export default router;
