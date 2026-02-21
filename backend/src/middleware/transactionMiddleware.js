@@ -26,6 +26,7 @@ const sell = async (req, res, next) => {
           }),
         )
         .required(),
+      paymentMethod: Joi.string().required(),
     });
 
     const { error } = schema.validate(req.body);
@@ -48,4 +49,28 @@ const sell = async (req, res, next) => {
   }
 };
 
-export default { sell };
+const cancelSale = async (req, res, next) => {
+  try {
+    const granted = await authMiddleware.checkPermission(
+      req,
+      "transaction.cancel",
+    );
+    if (!granted) {
+      logger.warn("Unauthorized access attempt");
+      return res.status(401).json({
+        meta: {
+          code: 401,
+          message: "You Don't Have Permission",
+        },
+      });
+    }
+    next();
+  } catch (error) {
+    logger.error(`Error voiding sale in Middleware: ${error}`);
+    return res.status(500).json({
+      meta: { code: 500, message: "Internal Server Error" },
+    });
+  }
+};
+
+export default { sell, cancelSale };

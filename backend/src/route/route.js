@@ -120,6 +120,12 @@ router.post(
   transactionController.sell,
 );
 
+router.put(
+  "/transaction/:id",
+  transactionMiddleware.cancelSale,
+  transactionController.cancelSale,
+);
+
 router.get(
   "/product-stock",
   productStockMiddleware.index,

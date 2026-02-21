@@ -22,7 +22,11 @@ const Transaction = db.define(
       allowNull: false,
     },
     paymentMethod: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM("cash", "debit", "transfer", "qris"),
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM("completed", "void"),
       allowNull: false,
     },
   },
