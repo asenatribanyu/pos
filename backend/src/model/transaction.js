@@ -1,24 +1,28 @@
 import db from "../database/database.js";
 import { DataTypes } from "sequelize";
 
-const ProductStock = db.define(
-  "ProductStock",
+const Transaction = db.define(
+  "Transaction",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    productId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     branchId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    quantity: {
+    userId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    amount: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+    },
+    paymentMethod: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
@@ -28,4 +32,4 @@ const ProductStock = db.define(
   },
 );
 
-export default ProductStock;
+export default Transaction;

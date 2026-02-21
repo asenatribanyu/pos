@@ -57,7 +57,7 @@ const create = async (req, res, next) => {
       });
     next();
   } catch (error) {
-    logger.error(`Error create product category: ${error}`);
+    logger.error(`Error create product category in Middleware: ${error}`);
     return res.status(500).json({
       meta: {
         code: 500,

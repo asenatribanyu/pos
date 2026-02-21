@@ -16,7 +16,7 @@ const RolePermission = db.define(
   {
     timestamps: true,
     underscored: true,
-  }
+  },
 );
 
 export default RolePermission;

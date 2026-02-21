@@ -39,10 +39,9 @@ const create = async (req, res, next) => {
       });
     }
     const schema = Joi.object({
-      companyId: Joi.number().required(),
       categoryId: Joi.number().required(),
       name: Joi.string().required(),
-      description: Joi.string().required(),
+      description: Joi.string().allow(null, "").optional(),
       type: Joi.string().valid("retail", "service", "fnb").required(),
       price: Joi.number().required(),
       costPrice: Joi.number().required(),
@@ -107,10 +106,9 @@ const update = async (req, res, next) => {
       });
     }
     const schema = Joi.object({
-      companyId: Joi.number().required(),
       categoryId: Joi.number().required(),
       name: Joi.string().required(),
-      description: Joi.string().required(),
+      description: Joi.string().allow(null, "").optional(),
       type: Joi.string().valid("retail", "service", "fnb").required(),
       price: Joi.number().required(),
       costPrice: Joi.number().required(),

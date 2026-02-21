@@ -1,36 +1,32 @@
-import { DataTypes } from "sequelize";
 import db from "../database/database.js";
+import { DataTypes } from "sequelize";
 
-const Product = db.define(
-  "Product",
+const TransactionDetail = db.define(
+  "TransactionDetail",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    categoryId: {
+    transactionId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    name: {
-      type: DataTypes.STRING,
+    productId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    type: {
-      type: DataTypes.ENUM("retail", "service", "fnb"),
+    quantity: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     price: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
-    costPrice: {
-      type: DataTypes.DECIMAL,
+    subTotal: {
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
   },
@@ -39,5 +35,4 @@ const Product = db.define(
     underscored: true,
   },
 );
-
-export default Product;
+export default TransactionDetail;

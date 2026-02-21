@@ -1,4 +1,4 @@
-import { Product, ProoductCategory } from "../model/index.js";
+import { Product, ProductCategory } from "../model/index.js";
 import logger from "../log/logger.js";
 import { Op } from "sequelize";
 
@@ -7,15 +7,22 @@ const index = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
-    const search = req.query.search || null;
+    const search = req.query.search;
+    let whereCondition = {};
+
+    if (search && typeof search === "string") {
+      whereCondition.name = {
+        [Op.iLike]: `%${search}%`,
+      };
+    }
     const { rows: products, count } = await Product.findAndCountAll({
-      where: { name: { [Op.iLike]: `%${search}%` } },
+      where: whereCondition,
       limit,
       offset,
       order: [["name", "ASC"]],
       include: [
         {
-          model: ProoductCategory,
+          model: ProductCategory,
         },
       ],
     });
@@ -47,9 +54,8 @@ const index = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { companyId, categoryId, name, description, type, price, costPrice } =
-      req.body;
-    const productCategory = await ProoductCategory.findByPk(categoryId);
+    const { categoryId, name, description, type, price, costPrice } = req.body;
+    const productCategory = await ProductCategory.findByPk(categoryId);
     if (!productCategory) {
       logger.warn(`Product category not found with id: ${categoryId}`);
       return res.status(404).json({
@@ -60,7 +66,6 @@ const create = async (req, res) => {
       });
     }
     const product = await Product.create({
-      companyId,
       categoryId,
       name,
       description,
@@ -126,8 +131,7 @@ const show = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { companyId, categoryId, name, description, type, price, costPrice } =
-      req.body;
+    const { categoryId, name, description, type, price, costPrice } = req.body;
     const product = await Product.findByPk(id);
     if (!product) {
       logger.warn(`Product not found with id: ${id}`);
@@ -139,7 +143,6 @@ const update = async (req, res) => {
       });
     }
     await product.update({
-      companyId,
       categoryId,
       name,
       description,
@@ -202,4 +205,4 @@ const destroy = async (req, res) => {
   }
 };
 
-export { index, create, show, update, destroy };
+export default { index, create, show, update, destroy };

@@ -59,6 +59,45 @@
     },
     {
       "name": "user.destroy"
+    },
+    {
+      "name": "product.index"
+    },
+    {
+      "name": "product.create"
+    },
+    {
+      "name": "product.show"
+    },
+    {
+      "name": "product.update"
+    },
+    {
+      "name": "product.destroy"
+    },
+    {
+      "name": "product.category.index"
+    },
+    {
+      "name": "product.category.create"
+    },
+    {
+      "name": "product.category.show"
+    },
+    {
+      "name": "product.category.update"
+    },
+    {
+      "name": "product.category.destroy"
+    },
+    {
+      "name": "product.stock.new"
+    },
+    {
+      "name": "product.stock.adjustment"
+    },
+    {
+      "name": "transaction.create"
     }
   ]
 }

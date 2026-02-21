@@ -8,15 +8,28 @@ const index = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
-    let whereClause = {};
+    const userLevel = req.user.Role.level;
+
+    let whereClause = {
+      level: {
+        [Op.gte]: userLevel,
+      },
+    };
+
     if (search) {
       if (!isNaN(search)) {
         whereClause = {
-          [Op.or]: [{ level: { [Op.eq]: `${search}` } }],
+          [Op.and]: [
+            { level: { [Op.gte]: userLevel } },
+            { level: { [Op.eq]: Number(search) } },
+          ],
         };
       } else {
         whereClause = {
-          [Op.or]: [{ name: { [Op.iLike]: `%${search}%` } }],
+          [Op.and]: [
+            { level: { [Op.gte]: userLevel } },
+            { name: { [Op.iLike]: `%${search}%` } },
+          ],
         };
       }
     }
@@ -72,7 +85,9 @@ const create = async (req, res) => {
       });
     }
     const role = await Role.create({ name, level });
-    await RolePermission.bulkCreate(permissionIds.map((permissionId) => ({ roleId: role.id, permissionId })));
+    await RolePermission.bulkCreate(
+      permissionIds.map((permissionId) => ({ roleId: role.id, permissionId })),
+    );
     return res.status(200).json({
       meta: {
         code: 200,
@@ -94,7 +109,9 @@ const create = async (req, res) => {
 const show = async (req, res) => {
   try {
     const { id } = req.params;
-    const role = await Role.findByPk(id, { include: { model: Permission, through: { attributes: [] } } });
+    const role = await Role.findByPk(id, {
+      include: { model: Permission, through: { attributes: [] } },
+    });
     if (!role) {
       logger.warn(`Role not found with id: ${id}`);
       return res.status(404).json({
@@ -137,7 +154,9 @@ const update = async (req, res) => {
     }
     const role = await Role.findByPk(id);
     await RolePermission.destroy({ where: { roleId: id } });
-    await RolePermission.bulkCreate(permissionIds.map((permissionId) => ({ roleId: id, permissionId })));
+    await RolePermission.bulkCreate(
+      permissionIds.map((permissionId) => ({ roleId: id, permissionId })),
+    );
     if (!role) {
       logger.warn(`Role not found with id: ${id}`);
       return res.status(404).json({
