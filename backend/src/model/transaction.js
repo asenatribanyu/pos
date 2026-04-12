@@ -1,39 +1,53 @@
-import db from "../database/database.js";
 import { DataTypes } from "sequelize";
+import { v7 as uuidv7 } from "uuid";
 
-const Transaction = db.define(
-  "Transaction",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+export default (sequelize) => {
+  const Transaction = sequelize.define(
+    "Transaction",
+    {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: uuidv7(),
+      },
+      code: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      branchId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      totalAmount: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+      },
+      paymentMethod: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
-    branchId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    {
+      tableName: "transactions",
+      timestamps: true,
+      underscored: true,
     },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    amount: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-    },
-    paymentMethod: {
-      type: DataTypes.ENUM("cash", "debit", "transfer", "qris"),
-      allowNull: false,
-    },
-    status: {
-      type: DataTypes.ENUM("completed", "void"),
-      allowNull: false,
-    },
-  },
-  {
-    timestamps: true,
-    underscored: true,
-  },
-);
-
-export default Transaction;
+  );
+  Transaction.associate = (models) => {
+    Transaction.belongsTo(models.Branch, { foreignKey: "branchId" });
+    Transaction.belongsTo(models.User, { foreignKey: "userId" });
+    Transaction.hasMany(models.TransactionItem, {
+      foreignKey: "transactionId",
+    });
+  };
+  return Transaction;
+};

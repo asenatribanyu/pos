@@ -1,29 +1,28 @@
 import { DataTypes } from "sequelize";
 import { v7 as uuidv7 } from "uuid";
 
-export default (sequileze) => {
-  const RolePermission = sequileze.define(
-    "RolePermission",
+export default (sequelize) => {
+  const Category = sequelize.define(
+    "Category",
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
         defaultValue: () => uuidv7(),
       },
-      roleId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-      },
-      permissionId: {
-        type: DataTypes.UUID,
+      name: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
     },
     {
-      tableName: "role_permissions",
+      tableName: "categories",
       timestamps: true,
       underscored: true,
     },
   );
-  return RolePermission;
+  Category.associate = (models) => {
+    Category.hasMany(models.Product, { foreignKey: "categoryId" });
+  };
+  return Category;
 };

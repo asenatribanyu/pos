@@ -44,6 +44,7 @@ const create = async (req, res, next) => {
         city: Joi.string().required(),
         address: Joi.string().required(),
         phone: Joi.string().required(),
+        code: Joi.string().required(),
       });
       const { error } = schema.validate(req.body);
       if (error)

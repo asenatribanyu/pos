@@ -1,27 +1,36 @@
-import { DataTypes } from 'sequelize'
-import db from '../database/database.js'
+import { DataTypes } from "sequelize";
+import { v7 as uuidv7 } from "uuid";
 
-const Role = db.define(
-  'Role',
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+export default (sequelize) => {
+  const Role = sequelize.define(
+    "Role",
+    {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: () => uuidv7(),
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      level: {
+        type: DataTypes.ENUM("0", "1", "2"),
+        allowNull: false,
+      },
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
+    {
+      tableName: "roles",
+      timestamps: true,
+      underscored: true,
     },
-    level: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    }
-  },
-  {
-    timestamps: true,
-    underscored: true
-  }
-)
-
-export default Role
+  );
+  Role.associate = (models) => {
+    Role.hasMany(models.User, { foreignKey: "roleId" });
+    Role.belongsToMany(models.Permission, {
+      through: "RolePermission",
+    });
+  };
+  return Role;
+};

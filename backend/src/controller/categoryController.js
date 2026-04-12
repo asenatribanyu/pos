@@ -1,4 +1,5 @@
-import { ProductCategory } from "../model/index.js";
+import models from "../model/index.js";
+const { Category } = models;
 import logger from "../log/logger.js";
 import { Op } from "sequelize";
 
@@ -15,13 +16,12 @@ const index = async (req, res) => {
         [Op.iLike]: `%${search}%`,
       };
     }
-    const { rows: productCategories, count } =
-      await ProductCategory.findAndCountAll({
-        where: whereCondition,
-        limit,
-        offset,
-        order: [["name", "ASC"]],
-      });
+    const { rows: productCategories, count } = await Category.findAndCountAll({
+      where: whereCondition,
+      limit,
+      offset,
+      order: [["name", "ASC"]],
+    });
     logger.info(
       `User with id: ${req.user.id} Getting product categories with search: ${search}`,
     );
@@ -51,7 +51,7 @@ const index = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { name } = req.body;
-    const existingProductCategory = await ProductCategory.findOne({
+    const existingProductCategory = await Category.findOne({
       where: { name: { [Op.iLike]: name } },
     });
     if (existingProductCategory) {
@@ -62,7 +62,7 @@ const create = async (req, res) => {
         },
       });
     }
-    const productCategory = await ProductCategory.create({ name });
+    const productCategory = await Category.create({ name });
     return res.status(200).json({
       meta: {
         code: 200,
@@ -84,7 +84,7 @@ const create = async (req, res) => {
 const show = async (req, res) => {
   try {
     const { id } = req.params;
-    const productCategory = await ProductCategory.findByPk(id);
+    const productCategory = await Category.findByPk(id);
     if (!productCategory) {
       logger.info(`Product category not found with id: ${id}`);
       return res.status(404).json({
@@ -117,7 +117,7 @@ const update = async (req, res) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
-    const productCategory = await ProductCategory.findByPk(id);
+    const productCategory = await Category.findByPk(id);
     if (!productCategory) {
       logger.info(`Product category not found with id: ${id}`);
       return res.status(404).json({
@@ -127,7 +127,7 @@ const update = async (req, res) => {
         },
       });
     }
-    const existingProductCategory = await ProductCategory.findOne({
+    const existingProductCategory = await Category.findOne({
       where: {
         [Op.and]: [{ name: { [Op.iLike]: name } }, { id: { [Op.ne]: id } }],
       },
@@ -169,7 +169,7 @@ const update = async (req, res) => {
 const destroy = async (req, res) => {
   try {
     const { id } = req.params;
-    const productCategory = await ProductCategory.findByPk(id);
+    const productCategory = await Category.findByPk(id);
     if (!productCategory) {
       logger.info(`Product category not found with id: ${id}`);
       return res.status(404).json({

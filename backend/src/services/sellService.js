@@ -1,4 +1,6 @@
-import { db, Transaction, TransactionDetail, Product } from "../model/index.js";
+import models from "../model/index.js";
+const { Transaction, TransactionItem, Product } = models;
+import db from "../database/database.js";
 import { applyStockChange } from "./productStockService.js";
 
 const createSale = async ({ branchId, userId, items, paymentMethod }) => {
@@ -39,7 +41,7 @@ const createSale = async ({ branchId, userId, items, paymentMethod }) => {
     for (const item of items) {
       const product = productMap.get(item.productId);
 
-      await TransactionDetail.create(
+      await TransactionItem.create(
         {
           saleId: sale.id,
           productId: item.productId,
@@ -72,7 +74,7 @@ const voidSale = async (saleId) => {
 
   return await db.transaction(async (t) => {
     const sale = await Transaction.findByPk(saleId, {
-      include: [{ model: TransactionDetail }],
+      include: [{ model: TransactionItem }],
       transaction: t,
       lock: t.LOCK.UPDATE,
     });
@@ -86,7 +88,7 @@ const voidSale = async (saleId) => {
     }
 
     // balikin stock
-    for (const detail of sale.TransactionDetails) {
+    for (const detail of sale.TransactionItems) {
       await applyStockChange({
         productId: detail.productId,
         branchId: sale.branchId,

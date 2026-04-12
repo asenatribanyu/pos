@@ -1,4 +1,6 @@
-import { ProductStock, Product, StockMovement, db } from "../model/index.js";
+import models from "../model/index.js";
+import db from "../database/database.js";
+const { Stock, Product } = models;
 import logger from "../log/logger.js";
 import {
   applyStockChange,
@@ -9,7 +11,7 @@ const index = async (req, res) => {
   try {
     const { branchId } = req.query;
 
-    const stocks = await ProductStock.findAll({
+    const stocks = await Stock.findAll({
       where: { branchId },
       include: [{ model: Product }],
       order: [["productId", "ASC"]],
@@ -30,11 +32,10 @@ const index = async (req, res) => {
 const addNewProductStock = async (req, res) => {
   const t = await db.transaction();
   try {
-    const { branchId, productId, quantity } = req.body;
+    const { productId, quantity } = req.body;
 
     await applyStockChange({
       productId,
-      branchId,
       quantity,
       type: "in",
       referenceType: "opening",

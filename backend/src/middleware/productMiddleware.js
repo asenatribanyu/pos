@@ -42,7 +42,7 @@ const create = async (req, res, next) => {
       categoryId: Joi.number().required(),
       name: Joi.string().required(),
       description: Joi.string().allow(null, "").optional(),
-      type: Joi.string().valid("retail", "service", "fnb").required(),
+      branchId: Joi.string().required(),
       price: Joi.number().required(),
       costPrice: Joi.number().required(),
     });

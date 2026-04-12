@@ -1,12 +1,8 @@
 import fs from "fs";
 import logger from "../../log/logger.js";
-import {
-  db,
-  Role,
-  RolePermission,
-  User,
-  Permission,
-} from "../../model/index.js";
+import db from "../database.js";
+import models from "../../model/index.js";
+const { User, Role, Permission, RolePermission } = models;
 import bcrypt from "bcrypt";
 
 const roles = fs.readFileSync("src/database/seeder/role.json", "utf-8");
@@ -20,7 +16,9 @@ const seed = async () => {
     await db.sync({ force: true });
     const data = JSON.parse(roles);
     await Role.bulkCreate(data.roles);
-    const roleAdmin = await Role.findOne({ where: { name: "Super Admin" } });
+    const roleAdmin = await Role.findOne({
+      where: { name: "Super Admin" },
+    });
     const permissionsData = JSON.parse(permissions);
     for (const permission of permissionsData.permissions) {
       const createdPermission = await Permission.create({

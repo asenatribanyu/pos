@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import { db } from "./model/index.js";
+import db from "./database/database.js";
 import router from "./route/route.js";
 import logger from "./log/logger.js";
 
@@ -31,8 +31,12 @@ app.use(/.*/, (req, res) => {
   return res.status(404).send("Page not found");
 });
 
+// app.listen(PORT, () => {
+//   logger.info(`Server is running on http://localhost:${PORT}`);
+// });
+
 db.sync({ alter: true }).then(() => {
   app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    logger.info(`Server is running on http://localhost:${PORT}`);
   });
 });

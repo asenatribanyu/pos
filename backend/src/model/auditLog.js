@@ -2,47 +2,53 @@ import { DataTypes } from "sequelize";
 import { v7 as uuidv7 } from "uuid";
 
 export default (sequelize) => {
-  const Branch = sequelize.define(
-    "Branch",
+  const AuditLog = sequelize.define(
+    "AuditLog",
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
         defaultValue: () => uuidv7(),
       },
-      name: {
-        type: DataTypes.STRING,
+
+      userId: {
+        type: DataTypes.UUID,
         allowNull: false,
-        unique: true,
       },
-      code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      city: {
+
+      action: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      address: {
+
+      entityType: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      phone: {
+
+      entityId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+      },
+
+      summary: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+
+      metadata: {
+        type: DataTypes.JSONB,
+        allowNull: true,
       },
     },
     {
-      tableName: "branches",
+      tableName: "audit_logs",
       timestamps: true,
       underscored: true,
     },
   );
-  Branch.associate = (models) => {
-    Branch.hasMany(models.User, { foreignKey: "branchId" });
-    Branch.hasMany(models.Product, { foreignKey: "branchId" });
-    Branch.hasMany(models.OrderCounter, { foreignKey: "branchId" });
+  AuditLog.associate = (models) => {
+    AuditLog.belongsTo(models.User, { foreignKey: "userId" });
   };
-  return Branch;
+  return AuditLog;
 };

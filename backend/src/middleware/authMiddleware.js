@@ -2,7 +2,7 @@ import joi from "joi";
 import logger from "../log/logger.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
-import { User, Role, Permission, RolePermission } from "../model/index.js";
+import models from "../model/index.js";
 
 const login = async (req, res, next) => {
   try {
@@ -50,13 +50,7 @@ const validateToken = async (req, res, next) => {
 
     const decoded = jwt.verify(token, config.app.jwtSecret);
 
-    const user = await User.findOne({
-      where: { id: decoded.id },
-      include: {
-        model: Role,
-        include: { model: Permission, through: { attributes: [] } },
-      },
-    });
+    const user = decoded.user;
 
     if (!user) {
       return res.status(401).json({
@@ -97,7 +91,9 @@ const validateToken = async (req, res, next) => {
 
 const checkPermission = async (req, permission) => {
   const user = req.user;
-  const hasPermission = user.Role.Permissions.some((rp) => rp.name === permission);
+  const hasPermission = user.Role.Permissions.some(
+    (rp) => rp.name === permission,
+  );
 
   if (hasPermission) {
     return true;

@@ -1,4 +1,5 @@
-import { Branch } from "../model/index.js";
+import models from "../model/index.js";
+const { Branch } = models;
 import logger from "../log/logger.js";
 import { Op } from "sequelize";
 
@@ -9,10 +10,12 @@ const index = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     let whereClause = {};
-
     if (search) {
       whereClause = {
-        [Op.or]: [{ name: { [Op.iLike]: `%${search}%` } }, { city: { [Op.iLike]: `%${search}%` } }],
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${search}%` } },
+          { city: { [Op.iLike]: `%${search}%` } },
+        ],
       };
     }
 
@@ -48,17 +51,28 @@ const index = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { name, city, address, phone } = req.body;
-    const existingBranch = await Branch.findOne({ where: { name, city } });
+    const { name, city, address, phone, code } = req.body;
+    const existingBranch = await Branch.findOne({
+      where: {
+        [Op.or]: [
+          {
+            [Op.and]: [{ name: name }, { city: city }],
+          },
+          {
+            code: code,
+          },
+        ],
+      },
+    });
     if (existingBranch) {
       return res.status(400).json({
         meta: {
           code: 400,
-          message: `Branch with name ${name} and city ${city} already exists`,
+          message: `Branch with name ${name} and city ${city} or code ${code} already exists`,
         },
       });
     }
-    const branch = await Branch.create({ name, city, address, phone });
+    const branch = await Branch.create({ name, city, address, phone, code });
     return res.status(200).json({
       meta: {
         code: 200,

@@ -1,11 +1,13 @@
-import { User, Role } from "../model/index.js";
+import models from "../model/index.js";
 import logger from "../log/logger.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
+import { createAuditLog } from "../helper/auditLogHelper.js";
 
 const login = async (req, res) => {
   try {
+    const User = models.User;
     const { email, password } = req.body;
     const user = await User.findOne({
       where: {
@@ -31,10 +33,47 @@ const login = async (req, res) => {
         },
       });
     }
-    const { password: _, ...userWithoutPassword } = user.toJSON();
-    const token = jwt.sign({ id: user.id }, config.app.jwtSecret, {
-      expiresIn: config.app.jwtExpiration,
+    const updateLastLogin = await User.update(
+      { lastLoginAt: new Date() },
+      { where: { id: user.id } },
+    );
+    const updatedUser = await User.findByPk(user.id, {
+      attributes: {
+        exclude: ["id", "password"],
+      },
+      include: [
+        {
+          model: models.Role,
+          attributes: {
+            exclude: ["id", "createdAt", "updatedAt"],
+          },
+          include: {
+            model: models.Permission,
+            through: { attributes: [] },
+            attributes: {
+              exclude: ["id", "createdAt", "updatedAt"],
+            },
+          },
+        },
+        {
+          model: models.Branch,
+        },
+      ],
     });
+    const token = jwt.sign(
+      { id: updatedUser.id, user: updatedUser },
+      config.app.jwtSecret,
+      {
+        expiresIn: config.app.jwtExpiration,
+      },
+    );
+    await createAuditLog(
+      user.id,
+      "Login",
+      "Login",
+      user.id,
+      "User logged in successfully",
+    );
     logger.info(`User logged in successfully with id: ${user.id}`);
     return res.status(200).json({
       meta: {
@@ -42,7 +81,7 @@ const login = async (req, res) => {
         message: "User logged in successfully",
       },
       data: {
-        user: userWithoutPassword,
+        user: updatedUser,
         token,
       },
     });

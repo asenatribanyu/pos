@@ -1,4 +1,5 @@
-import { Permission } from "../model/index.js";
+import models from "../model/index.js";
+const { Permission } = models;
 import logger from "../log/logger.js";
 import { Op } from "sequelize";
 

@@ -1,8 +1,9 @@
-import { db, ProductStock, StockMovement } from "../model/index.js";
+import models from "../model/index.js";
+const { Stock, StockMovement } = models;
+import logger from "../log/logger.js";
 
 const applyStockChange = async ({
   productId,
-  branchId,
   quantity,
   type,
   referenceType,
@@ -10,15 +11,15 @@ const applyStockChange = async ({
   transaction = null,
 }) => {
   const execute = async (t) => {
-    let stock = await ProductStock.findOne({
-      where: { productId, branchId },
+    let stock = await Stock.findOne({
+      where: { productId },
       transaction: t,
       lock: t.LOCK.UPDATE,
     });
 
     if (!stock) {
-      stock = await ProductStock.create(
-        { productId, branchId, quantity: 0 },
+      stock = await Stock.create(
+        { productId, quantity: 0 },
         { transaction: t },
       );
     }
@@ -40,7 +41,6 @@ const applyStockChange = async ({
     await StockMovement.create(
       {
         productId,
-        branchId,
         type,
         referenceType,
         referenceId,
@@ -63,13 +63,12 @@ const applyStockChange = async ({
 
 const adjustStockFromOpname = async ({
   productId,
-  branchId,
   physicalQty,
   transaction = null,
 }) => {
   const execute = async (t) => {
-    const stock = await ProductStock.findOne({
-      where: { productId, branchId },
+    const stock = await Stock.findOne({
+      where: { productId },
       transaction: t,
       lock: t.LOCK.UPDATE,
     });
@@ -89,7 +88,6 @@ const adjustStockFromOpname = async ({
 
     return await applyStockChange({
       productId,
-      branchId,
       quantity: Math.abs(difference),
       type,
       referenceType: "opname",

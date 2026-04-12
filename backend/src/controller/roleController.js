@@ -1,4 +1,5 @@
-import { Role, Permission, RolePermission } from "../model/index.js";
+import models from "../model/index.js";
+const { Role, Permission, RolePermission } = models;
 import logger from "../log/logger.js";
 import { Op } from "sequelize";
 

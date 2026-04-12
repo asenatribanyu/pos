@@ -1,29 +1,32 @@
 import { DataTypes } from "sequelize";
 import { v7 as uuidv7 } from "uuid";
 
-export default (sequileze) => {
-  const RolePermission = sequileze.define(
-    "RolePermission",
+export default (sequelize) => {
+  const Stock = sequelize.define(
+    "Stock",
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
         defaultValue: () => uuidv7(),
       },
-      roleId: {
-        type: DataTypes.UUID,
+      quantity: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
-      permissionId: {
+      productId: {
         type: DataTypes.UUID,
         allowNull: false,
       },
     },
     {
-      tableName: "role_permissions",
+      tableName: "stocks",
       timestamps: true,
       underscored: true,
     },
   );
-  return RolePermission;
+  Stock.asscoiate = (models) => {
+    Stock.belongsTo(models.Product, { foreignKey: "productId" });
+  };
+  return Stock;
 };

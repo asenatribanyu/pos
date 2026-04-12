@@ -1,43 +1,54 @@
 import { DataTypes } from "sequelize";
-import db from "../database/database.js";
+import { v7 as uuidv7 } from "uuid";
 
-const Product = db.define(
-  "Product",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+export default (sequelize) => {
+  const Product = sequelize.define(
+    "Product",
+    {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: () => uuidv7(),
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      code: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      price: {
+        type: DataTypes.DECIMAL,
+        allowNull: false,
+      },
+      costPrice: {
+        type: DataTypes.DECIMAL,
+        allowNull: false,
+      },
+      categoryId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      branchId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
     },
-    categoryId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    {
+      tableName: "products",
+      timestamps: true,
+      underscored: true,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    type: {
-      type: DataTypes.ENUM("retail", "service", "fnb"),
-      allowNull: false,
-    },
-    price: {
-      type: DataTypes.DECIMAL,
-      allowNull: false,
-    },
-    costPrice: {
-      type: DataTypes.DECIMAL,
-      allowNull: false,
-    },
-  },
-  {
-    timestamps: true,
-    underscored: true,
-  },
-);
-
-export default Product;
+  );
+  Product.associate = (models) => {
+    Product.belongsTo(models.Category, { foreignKey: "categoryId" });
+    Product.belongsTo(models.Branch, { foreignKey: "branchId" });
+    Product.hasOne(models.Stock, { foreignKey: "productId" });
+  };
+  return Product;
+};

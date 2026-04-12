@@ -1,4 +1,5 @@
-import { Product, ProductCategory } from "../model/index.js";
+import models from "../model/index.js";
+const { Product, Category } = models;
 import logger from "../log/logger.js";
 import { Op } from "sequelize";
 
@@ -22,7 +23,7 @@ const index = async (req, res) => {
       order: [["name", "ASC"]],
       include: [
         {
-          model: ProductCategory,
+          model: Category,
         },
       ],
     });
@@ -54,8 +55,9 @@ const index = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { categoryId, name, description, type, price, costPrice } = req.body;
-    const productCategory = await ProductCategory.findByPk(categoryId);
+    const { categoryId, name, description, type, price, costPrice, branchId } =
+      req.body;
+    const productCategory = await Category.findByPk(categoryId);
     if (!productCategory) {
       logger.warn(`Product category not found with id: ${categoryId}`);
       return res.status(404).json({
@@ -69,7 +71,7 @@ const create = async (req, res) => {
       categoryId,
       name,
       description,
-      type,
+      branchId,
       price,
       costPrice,
     });

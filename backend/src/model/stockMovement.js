@@ -1,50 +1,53 @@
-import db from "../database/database.js";
 import { DataTypes } from "sequelize";
+import { v7 as uuidv7 } from "uuid";
 
-const StockMovement = db.define(
-  "StockMovement",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+export default (sequelieze) => {
+  const StockMovement = sequelieze.define(
+    "StockMovement",
+    {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: () => uuidv7(),
+      },
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      type: {
+        type: DataTypes.ENUM("in", "out"),
+        allowNull: false,
+      },
+      productId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      referenceId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+      },
+      referenceType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      reason: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
-    productId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    {
+      tableName: "stock_movements",
+      timestamps: true,
+      underscored: true,
     },
-    branchId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    type: {
-      type: DataTypes.ENUM("in", "out"),
-      allowNull: false,
-    },
-    referenceType: {
-      type: DataTypes.ENUM(
-        "opening",
-        "sale",
-        "opname",
-        "purchase",
-        "sale_void",
-        "adjustment",
-      ),
-      allowNull: false,
-    },
-    referenceId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    quantity: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-  },
-  {
-    timestamps: true,
-    underscored: true,
-  },
-);
-
-export default StockMovement;
+  );
+  StockMovement.associate = (models) => {
+    StockMovement.belongsTo(models.Product, { foreignKey: "productId" });
+    StockMovement.belongsTo(models.User, { foreignKey: "userId" });
+  };
+  return StockMovement;
+};

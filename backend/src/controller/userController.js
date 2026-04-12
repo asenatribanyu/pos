@@ -1,4 +1,5 @@
-import { User, Role, Branch } from "../model/index.js";
+import models from "../model/index.js";
+const { User, Role, Branch } = models;
 import { Op } from "sequelize";
 import logger from "../log/logger.js";
 import bcrypt from "bcrypt";
@@ -13,7 +14,12 @@ const index = async (req, res) => {
     let whereClause = {};
     if (search) {
       whereClause = {
-        [Op.or]: [{ name: { [Op.iLike]: `%${search}%` } }, { email: { [Op.iLike]: `%${search}%` } }, { "$Role.name$": { [Op.iLike]: `%${search}%` } }, { "$Branch.name$": { [Op.iLike]: `%${search}%` } }],
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${search}%` } },
+          { email: { [Op.iLike]: `%${search}%` } },
+          { "$Role.name$": { [Op.iLike]: `%${search}%` } },
+          { "$Branch.name$": { [Op.iLike]: `%${search}%` } },
+        ],
       };
     }
     const { count, rows: users } = await User.findAndCountAll({
@@ -106,7 +112,13 @@ const create = async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashedPassword, roleId, branchId });
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      roleId,
+      branchId,
+    });
     return res.status(201).json({
       meta: {
         code: 201,
@@ -205,7 +217,9 @@ const update = async (req, res) => {
     }
 
     if (userId === parseInt(id) && role.level < user.Role.level) {
-      logger.warn(`User id: ${req.user.id} attempted to downgrade their own role`);
+      logger.warn(
+        `User id: ${req.user.id} attempted to downgrade their own role`,
+      );
       return res.status(400).json({
         meta: {
           code: 400,
@@ -329,7 +343,9 @@ const changePassword = async (req, res) => {
     }
     const isPasswordSame = await bcrypt.compare(newPassword, user.password);
     if (isPasswordSame) {
-      logger.warn(`New password cannot be the same as old password for user with id: ${id}`);
+      logger.warn(
+        `New password cannot be the same as old password for user with id: ${id}`,
+      );
       return res.status(400).json({
         meta: {
           code: 400,
